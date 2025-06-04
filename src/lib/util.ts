@@ -1,3 +1,5 @@
+import type { IDataArr } from "../types";
+
 export interface NikData {
   originalNik: string;
   areaCode: string;
@@ -149,5 +151,45 @@ export function analyzeNiks(niks: string[]) {
     ageCounts,
     genderCounts,
     provinceCounts,
+  };
+}
+
+
+export function analyzeOrderData(orders: IDataArr[]) {
+  const paymentTypeCounts: { [type: string]: number } = {};
+  const ticketPopularity: { [ticketName: string]: number } = {};
+  let totalSubAmount = 0;
+  let totalPaymentFee = 0;
+  let totalPlatformFee = 0;
+  let totalTaxAmount = 0;
+  let totalOverallAmount = 0;
+  let orderCount = 0;
+
+  orders.forEach(order => {
+    paymentTypeCounts[order.payment_type] = (paymentTypeCounts[order.payment_type] || 0) + 1;
+
+    ticketPopularity[order.ticket_name] = (ticketPopularity[order.ticket_name] || 0) + order.quantity;
+
+    totalSubAmount += order.sub_total_amount;
+    totalPaymentFee += order.payment_fee;
+    totalPlatformFee += order.platform_fee;
+    totalTaxAmount += order.tax_amount;
+    totalOverallAmount += order.total_amount;
+    orderCount++;
+  });
+
+  const averageOrderValue = orderCount > 0 ? totalOverallAmount / orderCount : 0;
+
+  return {
+    paymentTypeCounts,
+    ticketPopularity,
+    financialSummary: {
+      totalSubAmount,
+      totalPaymentFee,
+      totalPlatformFee,
+      totalTaxAmount,
+      totalOverallAmount,
+      averageOrderValue,
+    },
   };
 }

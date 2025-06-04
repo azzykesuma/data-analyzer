@@ -1,109 +1,112 @@
-import { AnimatePresence } from 'motion/react';
-import { useState } from 'react';
-import HowToSection from './components/HowToSection';
-import Result from './components/Result';
-import { analyzeNiks } from './lib/util';
-import type { IDataArr, INikAnalysisResult } from './types';
+import { AnimatePresence } from "motion/react";
+import { useState } from "react";
+import HowToSection from "./components/HowToSection";
+import Result from "./components/Result";
+import { analyzeNiks, analyzeOrderData } from "./lib/util";
+import type { CombinedAnalysisResult, IDataArr } from "./types";
 
 const expectedOrderSchema = {
-  order_number: 'string',
-  id_type: 'string',
-  id_number: 'string',
-  first_name: 'string',
-  last_name: 'string',
-  phone_number: 'string',
-  email: 'string',
-  ticket_code: 'string',
-  ticket_name: 'string',
-  quantity: 'number',
-  gateway_trx_id: 'string',
-  payment_type: 'string',
-  sub_total_amount: 'number',
-  payment_fee: 'number',
-  platform_fee: 'number',
-  tax_amount: 'number',
-  total_amount: 'number',
+  order_number: "string",
+  id_type: "string",
+  id_number: "string",
+  first_name: "string",
+  last_name: "string",
+  phone_number: "string",
+  email: "string",
+  ticket_code: "string",
+  ticket_name: "string",
+  quantity: "number",
+  gateway_trx_id: "string",
+  payment_type: "string",
+  sub_total_amount: "number",
+  payment_fee: "number",
+  platform_fee: "number",
+  tax_amount: "number",
+  total_amount: "number",
 };
 
 function App() {
-  const [jsonData, setJsonData] = useState('')
-  const [dataArr, setDataArr] = useState<IDataArr[]>([])
-  const [analysisResult, setAnalysisResult] = useState<INikAnalysisResult | null>(null)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [jsonData, setJsonData] = useState("");
+  const [dataArr, setDataArr] = useState<IDataArr[]>([]);
+  const [analysisResult, setAnalysisResult] =
+    useState<CombinedAnalysisResult | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const [showHowTo, setShowHowTo] = useState(false);
 
-  const handleJsonDataChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setJsonData(event.target.value)
-    setAnalysisResult(null)
-    setErrorMessage('')
-  }
+  const handleJsonDataChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setJsonData(event.target.value);
+    setAnalysisResult(null);
+    setErrorMessage("");
+  };
 
   const clear = () => {
-    setDataArr([])
-    setJsonData('')
-    setAnalysisResult(null)
-    setErrorMessage('')
-  }
+    setDataArr([]);
+    setJsonData("");
+    setAnalysisResult(null);
+    setErrorMessage("");
+  };
 
   const handleAddData = () => {
-    let parsedInput;
+    let parsedInput: IDataArr[] | IDataArr | null = null;
     try {
       parsedInput = JSON.parse(jsonData);
     } catch (error) {
-      setErrorMessage('Invalid JSON format. Please check your data.');
-      console.error('JSON parsing error:', error);
+      setErrorMessage("Invalid JSON format. Please check your data.");
+      console.error("JSON parsing error:", error);
       return;
     }
+
+    let newItems: IDataArr[] = [];
     if (Array.isArray(parsedInput)) {
-      setDataArr([...dataArr, ...parsedInput]);
-      setJsonData('');
+      newItems = parsedInput;
+    } else if (typeof parsedInput === "object" && parsedInput !== null) {
+      newItems = [parsedInput];
     } else {
-      setDataArr([...dataArr, parsedInput]);
-      setJsonData('');
-    }
-  }
-
-
-  const handleAnalyzeData = () => {
-    let parsedInput;
-    try {
-      const source = dataArr.length > 0 ? JSON.stringify(dataArr) : jsonData;
-      parsedInput = JSON.parse(source);
-    } catch (error) {
-      setErrorMessage('Invalid JSON format. Please check your data.');
-      console.error('JSON parsing error:', error);
+      setErrorMessage(
+        "Input must be a JSON object or an array of JSON objects."
+      );
       return;
     }
 
-    let orderDataArray = [] as IDataArr[];
-    if (Array.isArray(parsedInput)) {
-      orderDataArray = parsedInput;
-    } else if (typeof parsedInput === 'object' && parsedInput !== null) {
-      orderDataArray = [parsedInput];
-    } else {
-      setErrorMessage('Input must be a JSON object or an array of JSON objects.');
-      return;
-    }
-
-    const niksToAnalyze = [];
-    for (const item of orderDataArray) {
+    // Validate each new item before adding to dataArr
+    for (const item of newItems) {
       if (!validateOrderData(item)) {
         return;
       }
-      if (item.id_type === 'KTP' && typeof item.id_number === 'string' && item.id_number.length >= 12) {
+    }
+
+    setDataArr([...dataArr, ...newItems]);
+    setJsonData("");
+    setErrorMessage("");
+    setAnalysisResult(null);
+  };
+
+  const handleAnalyzeData = () => {
+    if (dataArr.length === 0) {
+      setErrorMessage('Please add some data to analyze.');
+      setAnalysisResult(null);
+      return;
+    }
+    const niksToAnalyze: string[] = [];
+    for (const item of dataArr) {
+      // Iterate over dataArr directly
+      if (
+        item.id_type === "KTP" &&
+        typeof item.id_number === "string" &&
+        item.id_number.length >= 12
+      ) {
         niksToAnalyze.push(item.id_number);
       }
     }
 
-    if (niksToAnalyze.length === 0) {
-      setErrorMessage('No valid KTP NIKs found in the provided data for analysis.');
-      setAnalysisResult(null);
-      return;
-    }
-
+    // Perform NIK analysis
     const nikAnalysis = analyzeNiks(niksToAnalyze);
-    setAnalysisResult(nikAnalysis);
-    setErrorMessage('');
+    const orderAnalysis = analyzeOrderData(dataArr);
+
+    setAnalysisResult({ nikAnalysis, orderAnalysis });
+    setErrorMessage("");
   };
 
   const validateOrderData = (data: IDataArr): boolean => {
@@ -112,26 +115,34 @@ function App() {
         setErrorMessage(`Missing field: '${key}' in order data.`);
         return false;
       }
-      if (typeof data[key as keyof IDataArr] !== expectedOrderSchema[key as keyof typeof expectedOrderSchema]) {
-        setErrorMessage(`Invalid type for field '${key}' in order data. Expected '${expectedOrderSchema[key as keyof typeof expectedOrderSchema]}', got '${typeof data[key as keyof IDataArr]}'`);
+      if (
+        typeof data[key as keyof IDataArr] !==
+        expectedOrderSchema[key as keyof typeof expectedOrderSchema]
+      ) {
+        setErrorMessage(
+          `Invalid type for field '${key}' in order data. Expected '${
+            expectedOrderSchema[key as keyof typeof expectedOrderSchema]
+          }', got '${typeof data[key as keyof IDataArr]}'`
+        );
         return false;
       }
     }
     return true;
   };
 
-
   return (
     <div className="min-h-screen overflow-hidden bg-gray-900 text-gray-100 font-inter flex flex-col">
       <header className="bg-gray-800 shadow-lg p-4 md:p-6 rounded-b-xl">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-blue-400">Data Analyzer</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-blue-400">
+            Data Analyzer
+          </h1>
           <nav>
             <button
               onClick={() => setShowHowTo(!showHowTo)}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
             >
-              {showHowTo ? 'Hide How To' : 'How To Use'}
+              {showHowTo ? "Hide How To" : "How To Use"}
             </button>
           </nav>
         </div>
@@ -145,7 +156,9 @@ function App() {
         )}
 
         <section className="bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-2xl">
-          <h2 className="text-2xl font-semibold text-blue-300 mb-4">Paste Your Data Here</h2>
+          <h2 className="text-2xl font-semibold text-blue-300 mb-4">
+            Paste Your Data Here
+          </h2>
           <textarea
             className="w-full h-48 p-4 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
             placeholder='Paste your JSON data here, e.g., {"order_number": "FT-...", "first_name": "...", ...}'
@@ -166,6 +179,7 @@ function App() {
           </button>
           <button
             onClick={handleAnalyzeData}
+            disabled={dataArr.length === 0}
             className="mt-4 w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Analyze Data
@@ -178,20 +192,22 @@ function App() {
             </div>
           )}
 
-           {analysisResult && (
-              <Result analysisResult={analysisResult} clear={clear} />
+          {analysisResult && (
+            <Result analysisResult={analysisResult} clear={clear} />
           )}
         </section>
       </main>
 
       <footer className="bg-gray-800 p-4 md:p-6 rounded-t-xl mt-8">
         <div className="container mx-auto text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} Data Analyzer. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Data Analyzer. All rights
+            reserved.
+          </p>
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
-export default App
-
+export default App;

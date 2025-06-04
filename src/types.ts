@@ -31,3 +31,23 @@ export interface INikAnalysisResult {
     [key: string]: number;
   };
 }
+
+export interface CombinedAnalysisResult {
+  nikAnalysis: {
+    ageCounts: { [age: number]: number };
+    genderCounts: { male: number; female: number; unknown: number };
+    provinceCounts: { [key: string]: number };
+  };
+  orderAnalysis: {
+    paymentTypeCounts: { [type: string]: number };
+    ticketPopularity: { [ticketName: string]: number }; // Sum of quantities
+    financialSummary: {
+      totalSubAmount: number;
+      totalPaymentFee: number;
+      totalPlatformFee: number;
+      totalTaxAmount: number;
+      totalOverallAmount: number;
+      averageOrderValue: number;
+    };
+  };
+}
