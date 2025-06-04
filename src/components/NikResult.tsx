@@ -19,31 +19,6 @@ const NikResult = ({ analysisResult }: { analysisResult: CombinedAnalysisResult 
           Gender Distribution
         </h5>
         <PieGenderChart analysisResult={analysisResult.nikAnalysis} />
-        <div className="mb-6">
-          <h4 className="text-lg font-medium text-blue-300 mb-2">
-            Gender Distribution
-          </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-3 bg-gray-800 rounded-lg shadow-md">
-              <p className="text-gray-400">Male:</p>
-              <p className="text-xl font-bold text-blue-400">
-                {analysisResult.nikAnalysis.genderCounts.male}
-              </p>
-            </div>
-            <div className="p-3 bg-gray-800 rounded-lg shadow-md">
-              <p className="text-gray-400">Female:</p>
-              <p className="text-xl font-bold text-pink-400">
-                {analysisResult.nikAnalysis.genderCounts.female}
-              </p>
-            </div>
-            <div className="p-3 bg-gray-800 rounded-lg shadow-md">
-              <p className="text-gray-400">Unknown:</p>
-              <p className="text-xl font-bold text-gray-400">
-                {analysisResult.nikAnalysis.genderCounts.unknown}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
       {/* age */}
       <div className="mb-6">

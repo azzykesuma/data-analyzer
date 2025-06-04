@@ -40,7 +40,8 @@ export interface CombinedAnalysisResult {
   };
   orderAnalysis: {
     paymentTypeCounts: { [type: string]: number };
-    ticketPopularity: { [ticketName: string]: number }; // Sum of quantities
+    ticketPopularity: { [ticketName: string]: number };
+    purchaserTicketCounts: { [purchaserName: string]: number };
     financialSummary: {
       totalSubAmount: number;
       totalPaymentFee: number;

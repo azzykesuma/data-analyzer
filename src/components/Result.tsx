@@ -14,16 +14,19 @@ const Result = ({ analysisResult, clear }: IResultProps) => {
         <h3 className="text-xl font-semibold text-green-300 mb-4">
           Analysis Results
         </h3>
-        <button
-          onClick={clear}
-          className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg"
-        >
-          Clear Data
-        </button>
       </div>
 
       <NikResult analysisResult={analysisResult} />
       <OrderDataResult analysisResult={analysisResult} />
+
+      <div className="mt-6 text-center">
+        <button
+          onClick={clear}
+          className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
+        >
+          Clear All Data
+        </button>
+      </div>
     </div>
   );
 };

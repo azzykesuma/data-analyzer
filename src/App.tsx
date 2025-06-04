@@ -1,5 +1,5 @@
 import { AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HowToSection from "./components/HowToSection";
 import Result from "./components/Result";
 import { analyzeNiks, analyzeOrderData } from "./lib/util";
@@ -108,6 +108,10 @@ function App() {
     setAnalysisResult({ nikAnalysis, orderAnalysis });
     setErrorMessage("");
   };
+
+  useEffect(() => {
+    console.log('analysisResult', analysisResult)
+  }, [analysisResult])
 
   const validateOrderData = (data: IDataArr): boolean => {
     for (const key in expectedOrderSchema) {

@@ -154,10 +154,10 @@ export function analyzeNiks(niks: string[]) {
   };
 }
 
-
 export function analyzeOrderData(orders: IDataArr[]) {
   const paymentTypeCounts: { [type: string]: number } = {};
   const ticketPopularity: { [ticketName: string]: number } = {};
+  const purchaserTicketCounts: { [purchaserName: string]: number } = {}; // New: Track tickets per purchaser
   let totalSubAmount = 0;
   let totalPaymentFee = 0;
   let totalPlatformFee = 0;
@@ -166,10 +166,17 @@ export function analyzeOrderData(orders: IDataArr[]) {
   let orderCount = 0;
 
   orders.forEach(order => {
+    // Payment Type Analysis
     paymentTypeCounts[order.payment_type] = (paymentTypeCounts[order.payment_type] || 0) + 1;
 
+    // Ticket Popularity
     ticketPopularity[order.ticket_name] = (ticketPopularity[order.ticket_name] || 0) + order.quantity;
 
+    // Purchaser Ticket Counts
+    const purchaserName = `${order.first_name} ${order.last_name}`;
+    purchaserTicketCounts[purchaserName] = (purchaserTicketCounts[purchaserName] || 0) + order.quantity;
+
+    // Financial Data
     totalSubAmount += order.sub_total_amount;
     totalPaymentFee += order.payment_fee;
     totalPlatformFee += order.platform_fee;
@@ -183,6 +190,7 @@ export function analyzeOrderData(orders: IDataArr[]) {
   return {
     paymentTypeCounts,
     ticketPopularity,
+    purchaserTicketCounts,
     financialSummary: {
       totalSubAmount,
       totalPaymentFee,
@@ -193,3 +201,4 @@ export function analyzeOrderData(orders: IDataArr[]) {
     },
   };
 }
+

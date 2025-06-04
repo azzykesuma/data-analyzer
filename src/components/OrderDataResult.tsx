@@ -9,6 +9,10 @@ const OrderDataResult = ({
     analysisResult.orderAnalysis.ticketPopularity
   ).sort(([, countA], [, countB]) => countB - countA);
 
+  const top5Purchasers = Object.entries(analysisResult.orderAnalysis.purchaserTicketCounts)
+    .sort(([, countA], [, countB]) => countB - countA) // Sort by ticket count descending
+    .slice(0, 5); // Take top 5
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -76,6 +80,32 @@ const OrderDataResult = ({
             </div>
           ) : (
             <p className="text-gray-400">No ticket data available.</p>
+          )}
+        </div>
+      </div>
+
+      {/* top purchaser */}
+      <div className="mb-6">
+        <h5 className="text-md font-medium text-gray-300 mb-2">
+          Top 5 Ticket Purchasers
+        </h5>
+        <div className="max-h-60 overflow-y-auto pr-2">
+          {top5Purchasers.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {top5Purchasers.map(([purchaserName, quantity]) => (
+                <div
+                  key={purchaserName}
+                  className="p-2 bg-gray-800 rounded-lg shadow-md"
+                >
+                  <p className="text-gray-400 text-sm">{purchaserName}:</p>
+                  <p className="text-lg font-bold text-purple-400">
+                    {quantity} tickets
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400">No purchaser data available.</p>
           )}
         </div>
       </div>
