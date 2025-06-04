@@ -157,7 +157,7 @@ export function analyzeNiks(niks: string[]) {
 export function analyzeOrderData(orders: IDataArr[]) {
   const paymentTypeCounts: { [type: string]: number } = {};
   const ticketPopularity: { [ticketName: string]: number } = {};
-  const purchaserTicketCounts: { [purchaserName: string]: number } = {}; // New: Track tickets per purchaser
+  const purchaserTicketCounts: { [purchaserName: string]: number } = {};
   let totalSubAmount = 0;
   let totalPaymentFee = 0;
   let totalPlatformFee = 0;
@@ -166,7 +166,6 @@ export function analyzeOrderData(orders: IDataArr[]) {
   let orderCount = 0;
 
   orders.forEach(order => {
-    // Payment Type Analysis
     paymentTypeCounts[order.payment_type] = (paymentTypeCounts[order.payment_type] || 0) + 1;
 
     // Ticket Popularity

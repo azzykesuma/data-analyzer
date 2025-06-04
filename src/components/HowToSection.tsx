@@ -14,7 +14,7 @@ const HowToSection = () => {
         <li className="text-start">
           Go to{" "}
           <a
-            href="https://cms.flotix.com"
+            href="https://cms.flotix.id/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-400 hover:underline"

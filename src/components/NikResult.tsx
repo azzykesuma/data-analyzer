@@ -43,7 +43,7 @@ const NikResult = ({ analysisResult }: { analysisResult: CombinedAnalysisResult 
           )}
         </div>
       </div>
-      {/* province */}
+
       <div className="overflow-x-auto">
         <h4 className="text-lg font-medium text-blue-300 mb-2">
           Transaction by Province
