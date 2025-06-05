@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { CombinedAnalysisResult } from "../types";
 import NikResult from "./NikResult";
 import OrderDataResult from "./OrderDataResult";
-import { Progress } from "./ui/progress";
+import { Progress } from "./ui/Progress";
 import { AnimatePresence } from "motion/react";
 
 interface IResultProps {
