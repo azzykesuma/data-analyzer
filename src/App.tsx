@@ -1,5 +1,5 @@
-import { AnimatePresence } from "motion/react";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion as m } from "motion/react";
+import { useState } from "react";
 import HowToSection from "./components/HowToSection";
 import Result from "./components/Result";
 import { analyzeNiks, analyzeOrderData } from "./lib/util";
@@ -23,7 +23,7 @@ const expectedOrderSchema = {
   platform_fee: "number",
   tax_amount: "number",
   total_amount: "number",
-};
+} as const;
 
 function App() {
   const [jsonData, setJsonData] = useState("");
@@ -109,10 +109,6 @@ function App() {
     setErrorMessage("");
   };
 
-  useEffect(() => {
-    console.log('analysisResult', analysisResult)
-  }, [analysisResult])
-
   const validateOrderData = (data: IDataArr): boolean => {
     for (const key in expectedOrderSchema) {
       if (!Object.prototype.hasOwnProperty.call(data, key)) {
@@ -189,12 +185,18 @@ function App() {
             Analyze Data
           </button>
 
-          {errorMessage && (
-            <div className="mt-4 p-3 bg-red-800 text-red-100 rounded-lg shadow-inner animate-fade-in">
-              <p className="font-medium">Error:</p>
-              <p>{errorMessage}</p>
-            </div>
-          )}
+          <AnimatePresence>
+            {errorMessage && (
+              <m.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="mt-4 p-3 bg-red-800 text-red-100 rounded-lg shadow-inner animate-fade-in">
+                <p className="font-medium">Error:</p>
+                <p>{errorMessage}</p>
+              </m.div>
+            )}
+          </AnimatePresence>
 
           {analysisResult && (
             <Result analysisResult={analysisResult} clear={clear} />

@@ -34,17 +34,17 @@ const PieGenderChart = ({
     {
       name: "Male",
       value: analysisResult.genderCounts.male,
-      fill: "hsl(210 80% 60%)", // A distinct blue for Male
+      fill: "hsl(210 80% 60%)",
     },
     {
       name: "Female",
       value: analysisResult.genderCounts.female,
-      fill: "hsl(340 80% 60%)", // A distinct pink for Female
+      fill: "hsl(340 80% 60%)",
     },
     {
       name: "Unknown",
       value: analysisResult.genderCounts.unknown,
-      fill: "hsl(240 5% 60%)", // A neutral gray for Unknown
+      fill: "hsl(240 5% 60%)",
     },
   ];
 
@@ -58,15 +58,13 @@ const PieGenderChart = ({
           data={genderData}
           dataKey="value"
           nameKey="name"
-          cx="50%" // Center X position
-          cy="50%" // Center Y position
-          outerRadius={120} // Outer radius for donut effect
-          innerRadius={80} // Inner radius for donut effect
-          paddingAngle={5} // Space between slices
+          cx="50%"
+          cy="50%"
+          outerRadius={120}
+          innerRadius={80}
+          paddingAngle={5}
           labelLine={false}
-          label={({ name, percent }) =>
-            `${name} ${(percent * 100).toFixed(0)}%`
-          } // Label with percentage
+          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
         >
           {genderData.map((_entry, index) => (
             <Cell

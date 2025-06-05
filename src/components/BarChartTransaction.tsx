@@ -78,7 +78,6 @@ const BarChartTransaction = ({analysisResult} : {analysisResult: CombinedAnalysi
           } // Styled tooltip
         />
 
-        {/* Define gradient for the bars */}
         <defs>
           <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%" stopColor="#63B3ED" stopOpacity={0.8} />{" "}

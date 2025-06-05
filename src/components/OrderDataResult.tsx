@@ -2,15 +2,17 @@ import type { CombinedAnalysisResult } from "../types";
 
 const OrderDataResult = ({
   analysisResult,
+  sum
 }: {
   analysisResult: CombinedAnalysisResult;
+  sum : number
 }) => {
   const sortedTicketPopularity = Object.entries(
     analysisResult.orderAnalysis.ticketPopularity
   ).sort(([, countA], [, countB]) => countB - countA);
 
   const top5Purchasers = Object.entries(analysisResult.orderAnalysis.purchaserTicketCounts)
-    .sort(([, countA], [, countB]) => countB - countA) // Sort by ticket count descending
+    .sort(([, countA], [, countB]) => countB - countA)
     .slice(0, 5); // Take top 5
 
   const formatCurrency = (amount: number) => {
@@ -81,6 +83,18 @@ const OrderDataResult = ({
           ) : (
             <p className="text-gray-400">No ticket data available.</p>
           )}
+        </div>
+      </div>
+
+      {/* Total Ticket Sales */}
+      <div className="mb-6">
+        <h5 className="text-md font-medium text-gray-300 mb-2">
+          Total Ticket Sales
+        </h5>
+        <div className="p-2 bg-gray-800 rounded-lg shadow-md">
+          <p className="text-lg font-bold text-indigo-400">
+            {sum} tickets
+          </p>
         </div>
       </div>
 
