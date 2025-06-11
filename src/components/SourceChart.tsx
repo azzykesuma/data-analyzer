@@ -46,7 +46,7 @@ const SourceChart = ({analysisResult} : {analysisResult: CombinedAnalysisResult[
           height={80} // Give more space for angled labels
         >
           <Label
-            value="Transaction by Province"
+            value="Transaction by Source"
             offset={-5} // Adjust offset to position the label correctly
             position="insideBottom"
             style={{ fill: "#E2E8F0", fontSize: 16, fontWeight: "bold" }} // White, bold label
