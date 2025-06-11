@@ -16,6 +16,8 @@ export interface IDataArr {
   platform_fee: number;
   tax_amount: number;
   total_amount: number;
+  source_name: string;
+  paid_date: string;
 }
 
 export interface INikAnalysisResult {
@@ -42,6 +44,7 @@ export interface CombinedAnalysisResult {
     paymentTypeCounts: { [type: string]: number };
     ticketPopularity: { [ticketName: string]: number };
     purchaserTicketCounts: { [purchaserName: string]: number };
+    sourcePurchaseTickers: { [source: string]: number };
     financialSummary: {
       totalSubAmount: number;
       totalPaymentFee: number;

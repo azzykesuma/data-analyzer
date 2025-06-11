@@ -4,6 +4,7 @@ import NikResult from "./NikResult";
 import OrderDataResult from "./OrderDataResult";
 import { Progress } from "./ui/Progress";
 import { AnimatePresence } from "motion/react";
+import SourceChart from "./SourceChart";
 
 interface IResultProps {
   analysisResult: CombinedAnalysisResult;
@@ -24,6 +25,7 @@ const Result = ({ analysisResult, clear }: IResultProps) => {
       </div>
 
       <NikResult analysisResult={analysisResult} />
+      <SourceChart analysisResult={analysisResult.orderAnalysis} />
       <OrderDataResult
         analysisResult={analysisResult}
         sum={sumOfAllTicketPurcase}

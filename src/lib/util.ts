@@ -158,6 +158,7 @@ export function analyzeOrderData(orders: IDataArr[]) {
   const paymentTypeCounts: { [type: string]: number } = {};
   const ticketPopularity: { [ticketName: string]: number } = {};
   const purchaserTicketCounts: { [purchaserName: string]: number } = {};
+  const sourcePurchaseTickers: { [source: string]: number } = {};
   let totalSubAmount = 0;
   let totalPaymentFee = 0;
   let totalPlatformFee = 0;
@@ -170,6 +171,9 @@ export function analyzeOrderData(orders: IDataArr[]) {
 
     // Ticket Popularity
     ticketPopularity[order.ticket_name] = (ticketPopularity[order.ticket_name] || 0) + order.quantity;
+
+    // Source Purchase Tickers
+    sourcePurchaseTickers[order.source_name] = (sourcePurchaseTickers[order.source_name] || 0) + order.quantity;
 
     // Purchaser Ticket Counts
     const purchaserName = `${order.first_name} ${order.last_name}`;
@@ -190,6 +194,7 @@ export function analyzeOrderData(orders: IDataArr[]) {
     paymentTypeCounts,
     ticketPopularity,
     purchaserTicketCounts,
+    sourcePurchaseTickers,
     financialSummary: {
       totalSubAmount,
       totalPaymentFee,
